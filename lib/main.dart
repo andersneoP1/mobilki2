@@ -16,7 +16,25 @@ class NotesApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: Colors.indigo,
+        // Современная гармоничная цветовая гамма на базе индиго с мягким светлым фоном
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF4F46E5),
+          brightness: Brightness.light,
+        ),
+        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          scrolledUnderElevation: 1.0,
+          backgroundColor: Colors.transparent,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            color: Color(0xFF0F172A),
+            fontSize: 20.0,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.3,
+          ),
+          iconTheme: IconThemeData(color: Color(0xFF0F172A)),
+        ),
       ),
       home: Scaffold(
         appBar: AppBar(
@@ -132,96 +150,218 @@ class _NotesWidgetState extends State<NotesWidget> {
       children: [
         // Блок ввода текста и кнопок управления
         Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Текстовое поле с TextEditingController и подсказкой из лекции
-              TextField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  hintText: 'Введите текст заметки',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.note_alt_outlined),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 12.0,
+                  offset: const Offset(0, 4),
                 ),
-                onSubmitted: (_) => _saveOrUpdateNote(),
+              ],
+              border: Border.all(
+                color: const Color(0xFFE2E8F0),
+                width: 1.0,
               ),
-              const SizedBox(height: 12.0),
-
-              // Строка с кнопками действий
-              Row(
-                children: [
-                  // Кнопка сохранения/обновления заметки
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: _saveOrUpdateNote,
-                      icon: Icon(
-                        _editingIndex == null ? Icons.save : Icons.check,
-                      ),
-                      label: Text(
-                        _editingIndex == null ? 'Сохранить' : 'Обновить',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Текстовое поле с TextEditingController и подсказкой из лекции
+                TextField(
+                  controller: _controller,
+                  maxLines: 3,
+                  minLines: 1,
+                  decoration: InputDecoration(
+                    hintText: 'Введите текст заметки',
+                    hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
+                    filled: true,
+                    fillColor: const Color(0xFFF8FAFC),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 14.0,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.note_alt_outlined,
+                      color: Color(0xFF6366F1),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF4F46E5),
+                        width: 1.8,
                       ),
                     ),
                   ),
+                  onSubmitted: (_) => _saveOrUpdateNote(),
+                ),
+                const SizedBox(height: 12.0),
 
-                  // Кнопка отмены редактирования (активна только в режиме редактирования)
-                  if (_editingIndex != null) ...[
-                    const SizedBox(width: 8.0),
-                    OutlinedButton.icon(
-                      onPressed: _cancelEditing,
-                      icon: const Icon(Icons.close),
-                      label: const Text('Отмена'),
+                // Строка с кнопками действий
+                Row(
+                  children: [
+                    // Кнопка сохранения/обновления заметки
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _saveOrUpdateNote,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14.0),
+                          backgroundColor: const Color(0xFF4F46E5),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                        icon: Icon(
+                          _editingIndex == null
+                              ? Icons.add_circle_outline
+                              : Icons.check_circle_outline,
+                          size: 20.0,
+                        ),
+                        label: Text(
+                          _editingIndex == null ? 'Сохранить' : 'Обновить',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15.0,
+                          ),
+                        ),
+                      ),
                     ),
+
+                    // Кнопка отмены редактирования (активна только в режиме редактирования)
+                    if (_editingIndex != null) ...[
+                      const SizedBox(width: 10.0),
+                      OutlinedButton.icon(
+                        onPressed: _cancelEditing,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14.0,
+                            horizontal: 16.0,
+                          ),
+                          foregroundColor: const Color(0xFF64748B),
+                          side: const BorderSide(color: Color(0xFFCBD5E1)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                        icon: const Icon(Icons.close_rounded, size: 18.0),
+                        label: const Text(
+                          'Отмена',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
-
-        const Divider(height: 1.0),
 
         // Прокручиваемый список заметок (ListView.builder, обернутый в Expanded)
         Expanded(
           child: _notes.isEmpty
-              ? const Center(
-                  child: Text(
-                    'Список пуст. Добавьте первую заметку!',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 15.0,
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(20.0),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFEEF2FF),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.sticky_note_2_outlined,
+                            size: 48.0,
+                            color: Color(0xFF6366F1),
+                          ),
+                        ),
+                        const SizedBox(height: 16.0),
+                        const Text(
+                          'Список пуст. Добавьте первую заметку!',
+                          style: TextStyle(
+                            color: Color(0xFF64748B),
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
                 )
               : ListView.builder(
                   // Явно указанные изученные в лекции параметры
                   scrollDirection: Axis.vertical,
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
                   itemCount: _notes.length,
                   itemBuilder: (BuildContext context, int index) {
                     final bool isCurrentEditing = _editingIndex == index;
 
                     return Card(
-                      elevation: isCurrentEditing ? 4.0 : 1.0,
+                      elevation: isCurrentEditing ? 2.0 : 0.0,
                       color: isCurrentEditing
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : null,
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 8.0,
+                          ? const Color(0xFFEEF2FF)
+                          : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                        side: BorderSide(
+                          color: isCurrentEditing
+                              ? const Color(0xFF6366F1)
+                              : const Color(0xFFE2E8F0),
+                          width: isCurrentEditing ? 1.5 : 1.0,
+                        ),
                       ),
+                      margin: const EdgeInsets.symmetric(vertical: 5.0),
                       child: ListTile(
-                        // Нумерация заметки
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14.0,
+                          vertical: 4.0,
+                        ),
+                        // Нумерация заметки в виде аккуратной аватарки
                         leading: CircleAvatar(
-                          child: Text('${index + 1}'),
+                          radius: 18.0,
+                          backgroundColor: isCurrentEditing
+                              ? const Color(0xFF4F46E5)
+                              : const Color(0xFFEEF2FF),
+                          child: Text(
+                            '${index + 1}',
+                            style: TextStyle(
+                              color: isCurrentEditing
+                                  ? Colors.white
+                                  : const Color(0xFF4F46E5),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13.0,
+                            ),
+                          ),
                         ),
                         // Текст заметки
                         title: Text(
                           _notes[index],
                           style: TextStyle(
+                            color: const Color(0xFF1E293B),
+                            fontSize: 15.0,
                             fontWeight: isCurrentEditing
-                                ? FontWeight.bold
+                                ? FontWeight.w600
                                 : FontWeight.normal,
                           ),
                         ),
@@ -231,13 +371,15 @@ class _NotesWidgetState extends State<NotesWidget> {
                           children: [
                             // Кнопка редактирования заметки (Оценка 5)
                             IconButton(
-                              icon: const Icon(Icons.edit),
+                              icon: const Icon(Icons.edit_outlined),
+                              color: const Color(0xFF4F46E5),
                               tooltip: 'Редактировать',
                               onPressed: () => _startEditing(index),
                             ),
                             // Кнопка удаления заметки (Оценка 5)
                             IconButton(
-                              icon: const Icon(Icons.delete),
+                              icon: const Icon(Icons.delete_outline_rounded),
+                              color: const Color(0xFFEF4444),
                               tooltip: 'Удалить',
                               onPressed: () => _deleteNote(index),
                             ),
@@ -252,3 +394,4 @@ class _NotesWidgetState extends State<NotesWidget> {
     );
   }
 }
+
